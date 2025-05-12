@@ -19,7 +19,6 @@ public class SynchronizationService {
     private final RestTemplate restTemplate;
     private final SynchronizationRepository repository;
 
-    // Récupérer l'ensemble des URLs d'API depuis les propriétés
     @Value("${external.api.urls}")
     private String externalApiUrls;
 
@@ -29,10 +28,10 @@ public class SynchronizationService {
     }
 
     public void synchronizeData() {
-        // Split des URLs par la virgule et itération sur chaque URL
+        // Split the URLs by comma and iterate over each URL
         String[] apiUrls = externalApiUrls.split(",");
         for (String apiUrl : apiUrls) {
-            synchronizeDataFromChampionship(apiUrl.trim()); // .trim() pour enlever les espaces potentiels
+            synchronizeDataFromChampionship(apiUrl.trim());  // trim to avoid leading/trailing spaces
         }
     }
 
@@ -78,8 +77,6 @@ public class SynchronizationService {
                             club.setAcronym(dto.getClub().getAcronym());
                             club.setYearCreation(dto.getClub().getYearCreation());
                             club.setStadium(dto.getClub().getStadium());
-                            /*club.setCoachName(coachName);
-                            club.setCoachNationality(coachNationality); */
                             club.setChampionship(dto.getClub().getChampionship());
 
                             repository.saveClubData(club);
@@ -95,7 +92,7 @@ public class SynchronizationService {
                         player.setClubId(clubId);
                         repository.savePlayerData(player);
 
-                        // Statistiques joueur
+                        //Statistiques joueur
                         try {
                             PlayerStatisticsDto statsDto = restTemplate.exchange(
                                     apiUrl + "/players/" + dto.getId() + "/statistics/" + seasonDate,
@@ -153,5 +150,4 @@ public class SynchronizationService {
             return differences.get(size / 2);
         }
     }
-
 }
